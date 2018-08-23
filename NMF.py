@@ -10,8 +10,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 no_features = 1000
 
 tf_vectorizer = TfidfVectorizer(max_df=0.95, min_df=2, max_features=no_features, stop_words='english')
-tf = tfidf_vectorizer.fit_transform(documents)
-tf_feature_names = tfidf_vectorizer.get_feature_names()
+tf = tf_vectorizer.fit_transform(documents)
+tf_feature_names = tf_vectorizer.get_feature_names()
+
+print(tf)
 
 #-----------------------#
 
