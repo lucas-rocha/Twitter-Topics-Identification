@@ -1,8 +1,12 @@
-from sklearn.datasets import fetch_20newsgroups
+documents = []
 
-dataset = fetch_20newsgroups(shuffle=True, random_state=1, remove=('headers', 'footers', 'quotes'))
-documents = dataset.data
-
+file = open('Tratando Arquivos/data.txt', 'r')
+i = 0
+for line in file:
+    documents.append(line)
+    i = i + 1
+    print(i)
+file.close()
 #-----------------------#
 
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
@@ -13,13 +17,11 @@ tf_vectorizer = TfidfVectorizer(max_df=0.95, min_df=2, max_features=no_features,
 tf = tf_vectorizer.fit_transform(documents)
 tf_feature_names = tf_vectorizer.get_feature_names()
 
-print(tf)
-
 #-----------------------#
 
 from sklearn.decomposition import NMF, LatentDirichletAllocation
 
-no_topics = 10
+no_topics = 20
 nmf = NMF(n_components=no_topics, random_state=1, alpha=.1, l1_ratio=.5, init='nndsvd').fit(tf)
 
 #-----------------------#
@@ -34,5 +36,5 @@ def display_topics(model, feature_names, no_top_words):
 
 #------------------------#
 
-no_top_words = 3
+no_top_words = 5
 display_topics(nmf, tf_feature_names, no_top_words)
