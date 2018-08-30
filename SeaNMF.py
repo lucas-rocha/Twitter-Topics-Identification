@@ -14,11 +14,23 @@ def tokenize(sentence):
 
     return tokens
 
+#------------------------#
 
-sentence = "At eight o'clock on Thursday morning Arthur didn't feel very good."
-tokens = tokenize(sentence)
+def save_tokens(sentence):
+    tokens = tokenize(sentence)
 
-file = open('SeaNMF-master/data/data.txt', 'w+')
-for w in tokens:
-    file.write(str(w + " "))
+    file = open('SeaNMF-master/data/data.txt', 'a+')
+    for w in tokens:
+        file.write(str(w + " "))
+    file.write(str("\n"))
+    file.close()
+
+#-----------------------#
+
+file = open('Tratando Arquivos/data.txt', 'r')
+i = 0
+for line in file:
+    i = i + 1
+    save_tokens(line)
+    print("Text " + str(i))
 file.close()
