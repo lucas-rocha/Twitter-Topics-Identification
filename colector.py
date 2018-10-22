@@ -5,11 +5,11 @@ import tweepy
 user = sys.argv[1:]
 
 #Autenticações
-consumer_key = '9JFv1iPBVFCsln8xcGZzsZKjf'
-consumer_secret = 'EhIem9oJS7k7i9eeuoyH44qAeDKdI9NGrjRH6kxcbO1qskB1fq'
+consumer_key = ''
+consumer_secret = ''
 
-access_token = '207565253-xI3kWTZr9KERbuOxYO0BEnsOROQm37IzKu7RY4bK'
-access_token_secret = 'tn1fWYTaVaICVPWbyssBjWwltnDTO4B7YddxJX3U2AM1x'
+access_token = ''
+access_token_secret = ''
 
 #Login na API
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
