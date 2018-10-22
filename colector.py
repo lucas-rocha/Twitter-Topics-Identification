@@ -24,4 +24,4 @@ def coletor(user, amount = 200):
     for status in stuff:
         print (status.full_text)
 
-coletor('nytimes')
+coletor('Harvard')
