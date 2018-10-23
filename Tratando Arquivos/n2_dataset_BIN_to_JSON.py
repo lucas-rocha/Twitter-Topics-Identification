@@ -53,15 +53,19 @@ def main():
 
 	alters_list = list(alters_set)	
 
-	with open(output, 'w') as f:
-		json.dump(alters_list, f)
+	# Teste (Lucas)
+	for alter in alters_list:
+		print alter
+
+	#with open(output, 'w') as f:
+	#	json.dump(alters_list, f)
 
 
 #Teste de impressão dos alters para verificar integridade da conversão.
-	with open(output, 'r') as f:	
-		alters = json.load(f)
-	for alter in alters:
-		print alter			
+	#with open(output, 'r') as f:	
+	#	alters = json.load(f)
+	#for alter in alters:
+	#	print alter			
 	print("######################################################################")
 	print("Coleta finalizada!")
 	print("######################################################################\n")

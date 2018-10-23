@@ -1,19 +1,10 @@
-import tweepy, datetime, sys, time, json, os, os.path, shutil, time, struct, random
-#reload(sys)
+# -*- coding: utf-8 -*-
+# -> Escrito para python 2 <- #
+import tweepy, datetime, sys, time, os, os.path, shutil, time, struct, random
+reload(sys)
 sys.setdefaultencoding('utf-8')
 
-##########################################################################################
-
-formato = 'll' # Long para id do tweet e outro long para autor
-timeline_struct = struct.Struct(formato) # Inicializa o objeto do tipo struct para poder armazenar o formato específico no arquivo binário
-
-##########################################################################################
-
-fonte_egos = "/home/amaury/dataset/n2/egos/bin/"
-fonte_alters = "/home/amaury/dataset/n2/alters/bin/"
-output = "/home/amaury/Lucas/n2/alters/"
-
-############################################################################################
+#-------------------------------------------------------------------------#
 
 def read_ego_bin(file):
 	with open(file, 'r') as f:	 
@@ -23,11 +14,12 @@ def read_ego_bin(file):
 		alters_list = []
 		while f.tell() < tamanho:
 			buffer = f.read(timeline_struct.size)
-			retweet, user = timeline_struct.unpack(buffer) #Lucas aqui você consegue o id do retweet e o id do autor... eu salvei em json só o id do autor. É so usar a informação que está na variável "retweet" também.
-			alters_list.append(user)
-	return authors_list
+			retweet, user = timeline_struct.unpack(buffer)
+			if not user in alters_list:
+				alters_list.append(user)
+	return alters_list
 
-##########################################################################################
+#-------------------------------------------------------------------------#
 
 def read_alter_bin(file):
 	global alters_list
@@ -38,53 +30,85 @@ def read_alter_bin(file):
 		tweet_id_list = []
 		while f.tell() < tamanho:
 			buffer = f.read(timeline_struct.size)
-			retweet, user = timeline_struct.unpack(buffer) #Lucas aqui você consegue o id do retweet e o id do autor... eu salvei em json só o id do autor. É so usar a informação que está na variável "retweet" também.
-			
+			retweet, user = timeline_struct.unpack(buffer)
+
 			if user in alters_list:
 				tweet_id_list.append(retweet)
 	return tweet_id_list
 
-##########################################################################################
+#-------------------------------------------------------------------------#
 
-def collect(tweet_id_list):
-	tweet_list = []
+def collect_and_save(tweet_id_list, ego):
 
-	for tweet in tweet_id_list:
-		print()
-
-##########################################################################################
-
-def saving_file(tweet_list, ego):
 	file = output + ego + '.txt'
-	with open(file, 'w+') as f:
-		for tweet in tweet_list:
-			f.write(tweet)
+	with open(file, 'a+') as f:
+		for tweet_id in tweet_id_list:
+			try:
+				tweet = api.get_status(tweet_id)
+				f.write(tweet.text)
+				f.write('\n')
+			except KeyboardInterrupt:
+				print ('Processo Interrompido.')
+				sys.exit()
+			except:
+				print ('Tweet nao encontrado.')
+				continue
 
-##########################################################################################
+#-------------------------------------------------------------------------#
 
 alters_list = []
 def main():
 	global alters_list
 	i = 0 # egos com retweets de alters coletados
+	fonte_alters_list = os.listdir(fonte_alters)
+
 	print ("Coletando Retweets:")
 
 	for file in os.listdir(fonte_egos):
 		i+=1
-		print ('---> Ego ' + i + ':')
 
 		ego = file.split(".dat")
 		ego = ego[0]
+		print ('#-----> Ego ' + str(i) + ': ' + ego)
 
 		alters_list = read_ego_bin(fonte_egos+file)
 		
 		for alter in alters_list:
-			print ('-> Alter ' + alter + ':')
+			print ('#---> Alter ' + str(alter))
 			
-			tweet_id_list = read_alter_bin(fonte_alters+alter+'.dat')
-			for tweet in tweet_id_list:
-				print (tweet)
-			#tweet_list = collect(tweet_id_list)
-			#saving_file(tweet_list, ego)
+			if not (str(alter)+'.dat') in fonte_alters_list:
+				print ('ALTER NAO TEM RETWEETS')
+			else:
+				tweet_id_list = read_alter_bin(fonte_alters+str(alter)+'.dat')
+				collect_and_save(tweet_id_list, ego)
 
+#-------------------------------------------------------------------------#
 
+fonte_egos = "/home/amaury/dataset/n2/egos/bin/"
+fonte_alters = "/home/amaury/dataset/n2/alters/bin/"
+output = "/home/amaury/Lucas/n2/alters/"
 
+#-------------------------------------------------------------------------#
+
+formato = 'll' # Long para id do tweet e outro long para autor
+timeline_struct = struct.Struct(formato) # Inicializa o objeto do tipo struct para poder armazenar o formato específico no arquivo binário
+
+#-------------------------------------------------------------------------#
+
+#API Tweepy
+
+#Autenticações
+consumer_key = ''
+consumer_secret = ''
+
+access_token = ''
+access_token_secret = ''
+
+#Login na API
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
+api = tweepy.API(auth)
+
+#-------------------------------------------------------------------------#
+#Executa o método main
+if __name__ == "__main__": main()
