@@ -45,7 +45,10 @@ def collect_and_save(tweet_id_list, ego):
 		for tweet_id in tweet_id_list:
 			try:
 				tweet = api.get_status(tweet_id)
-				f.write(tweet.text)
+				text = tweet.text
+				line = [w for w in text.split() if not w=='\n']
+				result = ' '.join(line)
+				f.write(result)
 				f.write('\n')
 			except KeyboardInterrupt:
 				print ('Processo Interrompido.')
@@ -70,6 +73,9 @@ def main():
 		ego = file.split(".dat")
 		ego = ego[0]
 		print ('#-----> Ego ' + str(i) + ': ' + ego)
+		if ego in ['40379006', '203226736', '874541060']:
+			print ('primeira coleta') # RETIRAR ESSE 'IF'
+			continue
 
 		alters_list = read_ego_bin(fonte_egos+file)
 		
@@ -77,7 +83,7 @@ def main():
 			print ('#---> Alter ' + str(alter))
 			
 			if not (str(alter)+'.dat') in fonte_alters_list:
-				print ('ALTER NAO TEM RETWEETS')
+				print ('ALTER NAO TEM RETWEETS') 
 			else:
 				tweet_id_list = read_alter_bin(fonte_alters+str(alter)+'.dat')
 				collect_and_save(tweet_id_list, ego)
@@ -98,11 +104,11 @@ timeline_struct = struct.Struct(formato) # Inicializa o objeto do tipo struct pa
 #API Tweepy
 
 #Autenticações
-consumer_key = ''
-consumer_secret = ''
+consumer_key = '9JFv1iPBVFCsln8xcGZzsZKjf'
+consumer_secret = 'EhIem9oJS7k7i9eeuoyH44qAeDKdI9NGrjRH6kxcbO1qskB1fq'
 
-access_token = ''
-access_token_secret = ''
+access_token = '207565253-xI3kWTZr9KERbuOxYO0BEnsOROQm37IzKu7RY4bK'
+access_token_secret = 'tn1fWYTaVaICVPWbyssBjWwltnDTO4B7YddxJX3U2AM1x'
 
 #Login na API
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
