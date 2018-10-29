@@ -29,9 +29,21 @@ def remove_links(sentence):
 
 #-------------------------------------------------------------------------#
 
-def save_tokens(id, sentence, rem_links = False):
-	output = "/home/amaury/Lucas/n2/textos_tradados/egos/" # Altere para a pasta de output
-	if remove_links:
+def remove_mentions(sentence):
+	no_mentions = ""
+	for w in sentence.split():
+		if not w[0] == '@':
+			no_mentions += str(w + " ")
+
+	return no_mentions
+
+#-------------------------------------------------------------------------#
+
+def save_tokens(id, sentence, rem_links = False, rem_mentions = False):
+	output = "/home/amaury/Lucas/n2/textos_tradados/alters/" # Altere para a pasta de output
+	if rem_mentions:
+		sentence = remove_mentions(sentence)
+	if rem_links:
 		sentence = remove_links(sentence)
 
 	tokens = tokenize(sentence)
@@ -48,7 +60,7 @@ def save_tokens(id, sentence, rem_links = False):
 
 def main():
 	import os
-	folder = "/home/amaury/Lucas/n2/egos/" # Altere para a pasta contendo os arquivos com os tweets de cada rede ego.
+	folder = "/home/amaury/Lucas/n2/teste/" # Altere para a pasta contendo os arquivos com os tweets de cada rede ego.
 	for doc in os.listdir(folder):
 		print("--> " + doc)
 
@@ -58,7 +70,7 @@ def main():
 		file = folder + doc
 		with open(file, 'r', encoding='utf-8') as f:
 			for line in f:
-				save_tokens(id, line, rem_links = True)
+				save_tokens(id, line, rem_links = True, rem_mentions = True)
 
 #-------------------------------------------------------------------------#
 #Executa o método main

@@ -42,6 +42,8 @@ def collect_and_save(tweet_id_list, ego):
 
 	file = output + ego + '.txt'
 	with open(file, 'a+') as f:
+		aux = False
+		i = 0
 		for tweet_id in tweet_id_list:
 			try:
 				tweet = api.get_status(tweet_id)
@@ -50,11 +52,19 @@ def collect_and_save(tweet_id_list, ego):
 				result = ' '.join(line)
 				f.write(result)
 				f.write('\n')
+				
+				i = i + 1
+				if aux:
+					sys.stdout.write("\033[F")
+				else:
+					aux = True
+				print ('Coleta: ' + str(i))
 			except KeyboardInterrupt:
 				print ('Processo Interrompido.')
 				sys.exit()
 			except:
-				print ('Tweet nao encontrado.')
+				print (str(sys.exc_value[0]))
+				aux = False
 				continue
 
 #-------------------------------------------------------------------------#
@@ -68,14 +78,15 @@ def main():
 	print ("Coletando Retweets:")
 
 	for file in os.listdir(fonte_egos):
-		i+=1
 
 		ego = file.split(".dat")
 		ego = ego[0]
-		print ('#-----> Ego ' + str(i) + ': ' + ego)
-		if ego in ['40379006', '203226736', '874541060']:
-			print ('primeira coleta') # RETIRAR ESSE 'IF'
+
+		if (ego + '.txt') in os.listdir(output):
+			print ('#-----> Ego já coletado ou em coleta: ' + ego)
 			continue
+
+		print ('#-----> Ego: ' + ego)
 
 		alters_list = read_ego_bin(fonte_egos+file)
 		
@@ -104,16 +115,16 @@ timeline_struct = struct.Struct(formato) # Inicializa o objeto do tipo struct pa
 #API Tweepy
 
 #Autenticações
-consumer_key = '9JFv1iPBVFCsln8xcGZzsZKjf'
-consumer_secret = 'EhIem9oJS7k7i9eeuoyH44qAeDKdI9NGrjRH6kxcbO1qskB1fq'
+consumer_key = '09jy1R0ljArdgXwclJiw8LBbe'
+consumer_secret = 'tZusC2HGFXkqX4ZdLfyw7tZ69poLQ2pobUxVq0G5qQhEDWiemj'
 
-access_token = '207565253-xI3kWTZr9KERbuOxYO0BEnsOROQm37IzKu7RY4bK'
-access_token_secret = 'tn1fWYTaVaICVPWbyssBjWwltnDTO4B7YddxJX3U2AM1x'
+access_token = '207565253-AB9P6CxNXIXBm1ZnUWaWtluLlMBtzlp5XLf1hKD1'
+access_token_secret = 'H9BTIfDemDymWZWQcWoWRyiaSeaVEd2Fvfnv2sd3JvaJU'
 
 #Login na API
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
-api = tweepy.API(auth)
+api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 #-------------------------------------------------------------------------#
 #Executa o método main
