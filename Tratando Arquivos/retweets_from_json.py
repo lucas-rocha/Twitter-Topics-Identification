@@ -1,20 +1,31 @@
-import json
+import json, os
 
-tweets = []
-doc = "5656182.json"
-id = (doc.split('.'))[0]
+timelines = "/home/amaury/coleta_old_01/timeline_collect/10mil_egos/json/"
+egos = "/home/amaury/graphs/n2/graphs_with_ego/"
+output = "/home/amaury/Lucas/n2/egos/"
 
-for line in open(doc, "r"):
-    tweets.append(json.loads(line))
+ego_list = []
 
-new_doc =  'timelines/' + id + '.txt'
+for f in os.listdir(egos):
+	ego = f.split(".edge_list")
+	ego = ego[0]
+	ego_list.append(ego)
 
-file = open(new_doc, 'a+', encoding='utf-8')
-for i in tweets:
-    split = i['text'].split()
-    if split[0] == 'RT':
-        for w in split[2:]:
-            if not w == '\n':
-                file.write(w +' ')
-        file.write('\n')
-file.close()
+for ego in ego_list:
+	print ("Ego: " + ego)
+
+	doc = timelines + ego + '.json'
+	tweets = []
+	
+	for line in open(doc, "r"):
+		tweets.append(json.loads(line))
+	
+	new_doc =  output + ego + '.txt'
+	with open(new_doc, 'a+') as f:
+		for i in tweets:
+			split = i['text'].split()
+			if split[0] == 'RT':
+				for w in split[2:]:
+					if not w == '\n':
+						f.write(w +' ')
+				f.write('\n')
