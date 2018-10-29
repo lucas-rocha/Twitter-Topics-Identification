@@ -39,10 +39,22 @@ def remove_mentions(sentence):
 
 #-------------------------------------------------------------------------#
 
-def save_tokens(id, sentence, rem_links = False, rem_mentions = False):
+def remove_hashtags(sentence):
+	no_hashtags = ""
+	for w in sentence.split():
+		if not w[0] == '#':
+			no_hashtags += str(w + " ")
+
+	return no_hashtags
+
+#-------------------------------------------------------------------------#
+
+def save_tokens(id, sentence, rem_links = False, rem_mentions = False, rem_hashtags = False):
 	output = "/home/amaury/Lucas/n2/textos_tradados/alters/" # Altere para a pasta de output
 	if rem_mentions:
 		sentence = remove_mentions(sentence)
+	if rem_hashtags:
+		sentence = remove_hashtags(sentence)
 	if rem_links:
 		sentence = remove_links(sentence)
 
@@ -70,7 +82,7 @@ def main():
 		file = folder + doc
 		with open(file, 'r', encoding='utf-8') as f:
 			for line in f:
-				save_tokens(id, line, rem_links = True, rem_mentions = True)
+				save_tokens(id, line, rem_links = True, rem_mentions = True, rem_hashtags = True)
 
 #-------------------------------------------------------------------------#
 #Executa o método main
