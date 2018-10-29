@@ -49,14 +49,26 @@ def remove_hashtags(sentence):
 
 #-------------------------------------------------------------------------#
 
+def issues(sentence):
+	no_issues = ""
+	for w in sentence.split():
+		if not w == '&amp;':
+			no_issues += str(w + " ")
+
+	return no_issues
+
+#-------------------------------------------------------------------------#
+
 def save_tokens(id, sentence, rem_links = False, rem_mentions = False, rem_hashtags = False):
-	output = "/home/amaury/Lucas/n2/textos_tradados/alters/" # Altere para a pasta de output
+	output = "/home/amaury/Lucas/n2/textos_tradados/egos/" # Altere para a pasta de output
 	if rem_mentions:
 		sentence = remove_mentions(sentence)
 	if rem_hashtags:
 		sentence = remove_hashtags(sentence)
 	if rem_links:
 		sentence = remove_links(sentence)
+
+	sentence = issues(sentence)
 
 	tokens = tokenize(sentence)
 	if len(tokens) == 0:
@@ -72,7 +84,7 @@ def save_tokens(id, sentence, rem_links = False, rem_mentions = False, rem_hasht
 
 def main():
 	import os
-	folder = "/home/amaury/Lucas/n2/teste/" # Altere para a pasta contendo os arquivos com os tweets de cada rede ego.
+	folder = "/home/amaury/Lucas/n2/egos/" # Altere para a pasta contendo os arquivos com os tweets de cada rede ego.
 	for doc in os.listdir(folder):
 		print("--> " + doc)
 
