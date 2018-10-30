@@ -39,21 +39,59 @@ def remove_mentions(sentence):
 
 #-------------------------------------------------------------------------#
 
-def save_tokens(id, sentence, rem_links = False, rem_mentions = False):
+def remove_hashtags(sentence):
+	no_hashtags = ""
+	for w in sentence.split():
+		if not w[0] == '#':
+			no_hashtags += str(w + " ")
+
+	return no_hashtags
+
+#-------------------------------------------------------------------------#
+
+def issues(sentence):
+	no_issues = ""
+	for w in sentence.split():
+		if not w == '&amp;':
+			no_issues += str(w + " ")
+
+	return no_issues
+
+#-------------------------------------------------------------------------#
+
+def lemmatizer(tokens):
+	from nltk.stem.wordnet import WordNetLemmatizer
+	#import nltk
+	#nltk.download('wordnet')
+	lmtzr = WordNetLemmatizer()
+	lemma = []
+	for w in tokens:
+		lemma.append(lmtzr.lemmatize(w,'v'))
+		
+	return lemma
+
+#-------------------------------------------------------------------------#
+
+def save_tokens(id, sentence, rem_links = False, rem_mentions = False, rem_hashtags = False):
 	output = "/home/amaury/Lucas/n2/textos_tradados/alters/" # Altere para a pasta de output
 	if rem_mentions:
 		sentence = remove_mentions(sentence)
+	if rem_hashtags:
+		sentence = remove_hashtags(sentence)
 	if rem_links:
 		sentence = remove_links(sentence)
+
+	sentence = issues(sentence)
 
 	tokens = tokenize(sentence)
 	if len(tokens) == 0:
 		return
+	tokens = lemmatizer(tokens)
 
 	doc_save = output + id + '.txt'
 	with open(doc_save, 'a+') as f:
 		for w in tokens:
-			f.write(str(w + " "))
+			f.write(str(w.upper() + " "))
 		f.write(str("\n"))
 
 #-------------------------------------------------------------------------#
@@ -70,7 +108,7 @@ def main():
 		file = folder + doc
 		with open(file, 'r', encoding='utf-8') as f:
 			for line in f:
-				save_tokens(id, line, rem_links = True, rem_mentions = True)
+				save_tokens(id, line, rem_links = True, rem_mentions = True, rem_hashtags = True)
 
 #-------------------------------------------------------------------------#
 #Executa o método main
