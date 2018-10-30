@@ -24,8 +24,13 @@ for ego in ego_list:
 	with open(new_doc, 'a+') as f:
 		for i in tweets:
 			split = i['text'].split()
-			if split[0] == 'RT':
-				for w in split[2:]:
-					if not w == '\n':
-						f.write(w +' ')
+			if 'RT @' in i['text']:
+				flag = False
+				for w in split:
+					if not flag:
+						if w == 'RT':
+							flag = True
+					else:
+						if not w == '\n':
+							f.write(w +' ')
 				f.write('\n')

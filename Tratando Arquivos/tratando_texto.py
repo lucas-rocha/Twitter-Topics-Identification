@@ -59,8 +59,21 @@ def issues(sentence):
 
 #-------------------------------------------------------------------------#
 
+def lemmatizer(tokens):
+	from nltk.stem.wordnet import WordNetLemmatizer
+	#import nltk
+	#nltk.download('wordnet')
+	lmtzr = WordNetLemmatizer()
+	lemma = []
+	for w in tokens:
+		lemma.append(lmtzr.lemmatize(w,'v'))
+		
+	return lemma
+
+#-------------------------------------------------------------------------#
+
 def save_tokens(id, sentence, rem_links = False, rem_mentions = False, rem_hashtags = False):
-	output = "/home/amaury/Lucas/n2/textos_tradados/egos/" # Altere para a pasta de output
+	output = "/home/amaury/Lucas/n2/textos_tradados/alters/" # Altere para a pasta de output
 	if rem_mentions:
 		sentence = remove_mentions(sentence)
 	if rem_hashtags:
@@ -73,18 +86,19 @@ def save_tokens(id, sentence, rem_links = False, rem_mentions = False, rem_hasht
 	tokens = tokenize(sentence)
 	if len(tokens) == 0:
 		return
+	tokens = lemmatizer(tokens)
 
 	doc_save = output + id + '.txt'
 	with open(doc_save, 'a+') as f:
 		for w in tokens:
-			f.write(str(w + " "))
+			f.write(str(w.upper() + " "))
 		f.write(str("\n"))
 
 #-------------------------------------------------------------------------#
 
 def main():
 	import os
-	folder = "/home/amaury/Lucas/n2/egos/" # Altere para a pasta contendo os arquivos com os tweets de cada rede ego.
+	folder = "/home/amaury/Lucas/n2/teste/" # Altere para a pasta contendo os arquivos com os tweets de cada rede ego.
 	for doc in os.listdir(folder):
 		print("--> " + doc)
 

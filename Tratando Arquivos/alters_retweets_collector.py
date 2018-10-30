@@ -72,7 +72,6 @@ def collect_and_save(tweet_id_list, ego):
 alters_list = []
 def main():
 	global alters_list
-	i = 0 # egos com retweets de alters coletados
 	fonte_alters_list = os.listdir(fonte_alters)
 
 	print ("Coletando Retweets:")
