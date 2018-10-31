@@ -23,6 +23,8 @@ def read_ego_bin(file):
 
 def read_alter_bin(file):
 	global alters_list
+	global json_alter
+
 	with open(file, 'r') as f:
 		f.seek(0,2)
 		tamanho = f.tell()
@@ -32,7 +34,7 @@ def read_alter_bin(file):
 			buffer = f.read(timeline_struct.size)
 			retweet, user = timeline_struct.unpack(buffer)
 
-			if user in alters_list:
+			if (user in alters_list) and (not user == json_alter):
 				tweet_id_list.append(retweet)
 	return tweet_id_list
 
@@ -50,12 +52,12 @@ def collect_and_save(tweet_id_list, ego):
 				tweet = api.get_status(tweet_id)
 
 				text = tweet.text
-				author = tweet.author
+				author = tweet.author.id
 
 				line = [w for w in text.split() if not w=='\n']
 				result = ' '.join(line)
 
-				x = {'text':result,'alter':json_alter,'author':author}
+				x = {json_alter:{'text':result,'author':author}}
 				y = json.dumps(x)
 
 				f.write(y)
@@ -91,7 +93,7 @@ def main():
 		ego = file.split(".dat")
 		ego = ego[0]
 
-		if (ego + '.txt') in os.listdir(output):
+		if (ego + '.json') in os.listdir(output):
 			print ('#-----> Ego já coletado ou em coleta: ' + ego)
 			continue
 
@@ -125,11 +127,11 @@ timeline_struct = struct.Struct(formato) # Inicializa o objeto do tipo struct pa
 #API Tweepy
 
 #Autenticações
-consumer_key = '09jy1R0ljArdgXwclJiw8LBbe'
-consumer_secret = 'tZusC2HGFXkqX4ZdLfyw7tZ69poLQ2pobUxVq0G5qQhEDWiemj'
+consumer_key = ''
+consumer_secret = ''
 
-access_token = '207565253-AB9P6CxNXIXBm1ZnUWaWtluLlMBtzlp5XLf1hKD1'
-access_token_secret = 'H9BTIfDemDymWZWQcWoWRyiaSeaVEd2Fvfnv2sd3JvaJU'
+access_token = ''
+access_token_secret = ''
 
 #Login na API
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
