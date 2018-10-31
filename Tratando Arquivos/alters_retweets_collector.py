@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # -> Escrito para python 2 <- #
-import tweepy, datetime, sys, time, os, os.path, shutil, time, struct, random
+import tweepy, datetime, sys, time, os, os.path, shutil, time, struct, random, json
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
 #-------------------------------------------------------------------------#
 
 def read_ego_bin(file):
-	with open(file, 'r') as f:	 
+	with open(file, 'r') as f:
 		f.seek(0,2)
 		tamanho = f.tell()
 		f.seek(0)
@@ -23,7 +23,7 @@ def read_ego_bin(file):
 
 def read_alter_bin(file):
 	global alters_list
-	with open(file, 'r') as f:	 
+	with open(file, 'r') as f:
 		f.seek(0,2)
 		tamanho = f.tell()
 		f.seek(0)
@@ -39,20 +39,28 @@ def read_alter_bin(file):
 #-------------------------------------------------------------------------#
 
 def collect_and_save(tweet_id_list, ego):
+	global json_alter
 
-	file = output + ego + '.txt'
+	file = output + ego + '.json'
 	with open(file, 'a+') as f:
 		aux = False
 		i = 0
 		for tweet_id in tweet_id_list:
 			try:
 				tweet = api.get_status(tweet_id)
+
 				text = tweet.text
+				author = tweet.author
+
 				line = [w for w in text.split() if not w=='\n']
 				result = ' '.join(line)
-				f.write(result)
+
+				x = {'text':result,'alter':json_alter,'author':author}
+				y = json.dumps(x)
+
+				f.write(y)
 				f.write('\n')
-				
+
 				i = i + 1
 				if aux:
 					sys.stdout.write("\033[F")
@@ -70,8 +78,10 @@ def collect_and_save(tweet_id_list, ego):
 #-------------------------------------------------------------------------#
 
 alters_list = []
+json_alter = ""
 def main():
 	global alters_list
+	global json_alter
 	fonte_alters_list = os.listdir(fonte_alters)
 
 	print ("Coletando Retweets:")
@@ -88,12 +98,13 @@ def main():
 		print ('#-----> Ego: ' + ego)
 
 		alters_list = read_ego_bin(fonte_egos+file)
-		
+
 		for alter in alters_list:
+			json_alter = alter
 			print ('#---> Alter ' + str(alter))
-			
+
 			if not (str(alter)+'.dat') in fonte_alters_list:
-				print ('ALTER NAO TEM RETWEETS') 
+				print ('ALTER NAO TEM RETWEETS')
 			else:
 				tweet_id_list = read_alter_bin(fonte_alters+str(alter)+'.dat')
 				collect_and_save(tweet_id_list, ego)
