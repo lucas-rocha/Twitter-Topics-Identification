@@ -51,9 +51,14 @@ def remove_hashtags(sentence):
 
 def issues(sentence):
 	no_issues = ""
-	issues = ['&gt;','&amp;']
+	issues = ['-&gt;','&amp;']
 	for w in sentence.split():
-		if not w in issues:
+		flag = False
+		for i in issues:
+			if i in w:
+				flag = True
+				break
+		if not flag:
 			no_issues += str(w + " ")
 
 	return no_issues
