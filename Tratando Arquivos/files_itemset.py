@@ -67,10 +67,10 @@ def main():
 
 #-------------------------------------------------------------------------#
 
-fonte_ego = "/home/amaury/dataset/n2/egos/bin/1141657633.dat"
+fonte_ego = "/home/amaury/dataset/n2/egos/bin/739991145623605248.dat"
 fonte_alters = "/home/amaury/dataset/n2/alters/bin/"
-output_tweets = "/home/amaury/Downloads/tweets.txt"
-output_users = "/home/amaury/Downloads/users.txt"
+output_tweets = "/home/amaury/Lucas/Twitter-Topics-Identification/Itemset/Exemplos/tweets.txt"
+output_users = "/home/amaury/Lucas/Twitter-Topics-Identification/Itemset/Exemplos/users.txt"
 
 #-------------------------------------------------------------------------#
 
