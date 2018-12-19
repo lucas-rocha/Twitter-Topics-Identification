@@ -39,6 +39,10 @@ def remove_links(sentence):
 
 def remove_mentions(sentence):
 	no_mentions = ""
+
+	if len(sentence.split()) > 0:  
+		no_mentions = sentence.split()[0] + " "
+	
 	for w in sentence.split():
 		if not w[0] == '@':
 			no_mentions += str(w + " ")
@@ -122,7 +126,7 @@ def main():
 		file = folder + doc
 		with open(file, 'r', encoding='utf-8') as f:
 			for line in f:
-				save_tokens(id, line, rem_links = True, rem_mentions = False, rem_hashtags = True)
+				save_tokens(id, line, rem_links = True, rem_mentions = True, rem_hashtags = True)
 
 #-------------------------------------------------------------------------#
 #Executa o metodo main
