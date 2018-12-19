@@ -9,8 +9,20 @@ def tokenize(sentence):
 	stop_words = set(stopwords.words('english'))
 	#stop_words = set(stopwords.words('portuguese'))
 
+	'''
+	if len(sentence) > 0:
+		autor = (sentence.split())[0] #mantendo o @autor
+		sentence = sentence.replace(autor,'@')
+		autor = autor[:-1] #mantendo o @autor
+	'''
+
 	tokenizer = RegexpTokenizer(r'\w+')
 	sentence = tokenizer.tokenize(sentence)
+
+	'''
+	if len(sentence) > 0:
+		sentence.append(autor) #mantendo o @autor
+	'''
 
 	tokens = [w for w in sentence if not w in stop_words]
 
@@ -31,6 +43,12 @@ def remove_links(sentence):
 
 def remove_mentions(sentence):
 	no_mentions = ""
+
+	'''
+	if len(sentence.split()) > 0:  
+		no_mentions = sentence.split()[0] + " "
+	'''
+	
 	for w in sentence.split():
 		if not w[0] == '@':
 			no_mentions += str(w + " ")
@@ -117,5 +135,5 @@ def main():
 				save_tokens(id, line, rem_links = True, rem_mentions = True, rem_hashtags = True)
 
 #-------------------------------------------------------------------------#
-#Executa o método main
+#Executa o metodo main
 if __name__ == "__main__": main()
