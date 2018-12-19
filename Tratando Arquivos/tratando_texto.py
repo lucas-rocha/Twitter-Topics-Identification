@@ -9,8 +9,16 @@ def tokenize(sentence):
 	stop_words = set(stopwords.words('english'))
 	#stop_words = set(stopwords.words('portuguese'))
 
+	if len(sentence) > 0:
+		autor = (sentence.split())[0] #mantendo o @autor
+		sentence = sentence.replace(autor,'@')
+		autor = autor[:-1] #mantendo o @autor
+
 	tokenizer = RegexpTokenizer(r'\w+')
 	sentence = tokenizer.tokenize(sentence)
+
+	if len(sentence) > 0:
+		sentence.append(autor) #mantendo o @autor
 
 	tokens = [w for w in sentence if not w in stop_words]
 
@@ -114,8 +122,8 @@ def main():
 		file = folder + doc
 		with open(file, 'r', encoding='utf-8') as f:
 			for line in f:
-				save_tokens(id, line, rem_links = True, rem_mentions = True, rem_hashtags = True)
+				save_tokens(id, line, rem_links = True, rem_mentions = False, rem_hashtags = True)
 
 #-------------------------------------------------------------------------#
-#Executa o método main
+#Executa o metodo main
 if __name__ == "__main__": main()
