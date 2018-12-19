@@ -22,9 +22,17 @@ for ego in ego_list:
 	
 	new_doc =  output + ego + '.txt'
 	with open(new_doc, 'a+') as f:
+		rt = 'retweeted_status'
 		for i in tweets:
+			if rt in i.keys():
+				autor = str(i[rt]['user']['id'])
+				f.write(autor + ' ' + i[rt]['text'] + '\n')
+
+
+'''
 			split = i['text'].split()
-			if 'RT @' in i['text']:
+			if split[0] == 'RT' and (split[0] == '@' and split[-1] == ':'):
+				#print('------------> ' + str(i))
 				flag = False
 				for w in split:
 					if not flag:
@@ -33,4 +41,5 @@ for ego in ego_list:
 					else:
 						if not w == '\n':
 							f.write(w +' ')
-				f.write('\n')
+				f.write(str(i['retweeted_status']['user']['id'])+'\n')
+'''
