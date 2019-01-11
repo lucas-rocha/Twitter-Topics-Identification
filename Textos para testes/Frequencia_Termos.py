@@ -17,7 +17,7 @@ def contagem(lines, t):
     cont = 0
     for line in lines:
         l = line.split()
-        for termo in l[1:]:
+        for termo in l:
             if termo == t:
                 cont+=1
                 break
@@ -27,30 +27,37 @@ def contagem(lines, t):
 def main():
     import os
     folder = "egos/"
+    output = "Documentos Finais/"
     for doc in os.listdir(folder):
-        print("\n\n--> " + doc)
+        print("\n--> " + doc)
 
         file = folder + doc
         f = open(file, 'r')
+
+        doc_save = output + doc
+        outfile = open(doc_save, 'a+')
+
 
         lines = f.readlines()
 
         termos = {}
 
         for line in lines:
-            l = line[len(line.split()[0])+1:]
-            tweet = stopwords(l)
-            for termo in tweet:
-                if not termo in termos.keys():
-                    termos[termo] = contagem(lines, termo)
+            tweet = stopwords(line)
+            if len(tweet) > 0:
+                for termo in tweet:
+                    cont = 0
+                    if not termo in termos.keys():
+                        termos[termo] = contagem(lines, termo)
+                    #Salvando
+                    if termos[termo] > 1:
+                        outfile.write(str(termo + " "))
+                        cont += 1
+                if cont > 0:
+                    outfile.write(str("\n"))
 
-        print(sorted(termos.items(), key = itemgetter(1), reverse=True))
-        print(len(termos))
-        aux = 0
-        for t in termos:
-            if termos[t] > 3:
-                aux += 1
-        print(aux)
+        f.close()
+        outfile.close()
 
 # -------------------------------------------------------------------------#
 # Executa o metodo main

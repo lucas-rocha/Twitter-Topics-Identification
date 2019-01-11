@@ -1,3 +1,7 @@
+def contagem_interseccao(a, b):
+    s = set(a)
+    return len(s.intersection(b))
+
 def new_indice(lines):
     indice = {}
     contador = 0
@@ -9,9 +13,13 @@ def new_indice(lines):
 
 def main():
     import os
-    folder = "egos/"
+    import numpy as np
+    import json
+    folder = "Documentos Finais/"
+    output_matriz = "Matrizes de Coocorrencia/"
+    output_indice = "Indices de Termos/"
     for doc in os.listdir(folder):
-        print("\n\n--> " + doc)
+        print("--> " + doc)
 
         file = folder + doc
         f = open(file, 'r')
@@ -30,6 +38,29 @@ def main():
                     indice_ocorrencia[indice[w]] = [index]
                 else:
                     indice_ocorrencia[indice[w]].append(index)
+
+        #Salvando indice Termo-Inteiro
+        file = output_indice + (doc.split('.txt')[0]) + '.json'
+        output = open(file, 'w+')
+        out = json.dumps(indice)
+        output.write(out)
+        output.close()
+
+        #Montando e salvando matriz de coocorrencia
+        file = output_matriz + doc
+        output = open(file, 'a+')
+
+        B = np.zeros((contador,contador), dtype=np.int_)
+
+        for i in range(0,contador):
+            for j in range(0,contador):
+                B[i][j] = contagem_interseccao(indice_ocorrencia[i], indice_ocorrencia[j])
+                output.write(str(B[i][j]) + ' ')
+            output.write('\n')
+
+        output.close()
+
+
 # -------------------------------------------------------------------------#
 # Executa o metodo main
 if __name__ == "__main__": main()
