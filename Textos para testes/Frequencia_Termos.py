@@ -1,25 +1,13 @@
 from operator import itemgetter
-from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
+from stopwords import stop_words
 
-def stop_words(line):
-    stopWords = set(stopwords.words('english'))
-    words = word_tokenize(line)
+def stopwords(line):
+    words = line.split()
     wordsFiltered = []
 
-    stopWords.add('I')
-    stopWords.add('THE')
-    stopWords.add('WE')
-    stopWords.add('GET')
-    stopWords.add('THIS')
-    stopWords.add('IT')
-    stopWords.add('MAKE')
-    stopWords.add('A')
-    stopWords.add('IF')
-    stopWords.add('U')
-
     for w in words:
-        if w not in stopWords:
+        if w not in stop_words:
             wordsFiltered.append(w)
 
     return wordsFiltered
@@ -51,7 +39,7 @@ def main():
 
         for line in lines:
             l = line[len(line.split()[0])+1:]
-            tweet = stop_words(l)
+            tweet = stopwords(l)
             for termo in tweet:
                 if not termo in termos.keys():
                     termos[termo] = contagem(lines, termo)
