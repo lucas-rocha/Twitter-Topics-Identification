@@ -45,8 +45,8 @@ def main():
         for line in lines:
             tweet = stopwords(line)
             if len(tweet) > 0:
+                cont = 0
                 for termo in tweet:
-                    cont = 0
                     if not termo in termos.keys():
                         termos[termo] = contagem(lines, termo)
                     #Salvando
