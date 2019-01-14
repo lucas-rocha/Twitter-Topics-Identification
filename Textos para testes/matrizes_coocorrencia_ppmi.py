@@ -2,6 +2,7 @@ import os
 import numpy as np
 import json
 import math
+from scipy import stats
 
 def calculo_ppmi(B, alpha, i, j):
     Pij = B[i][j]/alpha
@@ -36,6 +37,7 @@ def main():
     matriz_coocorrencia = "Matrizes de Coocorrencia/"
     output_indice = "Indices de Termos/"
     matriz_PPMI = "Matrizes PPMI/"
+    correlação_pearson = "Correlação de Pearson/"
     for doc in os.listdir(folder):
         print("--> " + doc)
 
@@ -66,7 +68,7 @@ def main():
 
         # Montando e salvando matriz de coocorrencia
         file = matriz_coocorrencia + doc
-        output = open(file, 'a+')
+        output = open(file, 'w+')
 
         B = np.zeros((contador,contador), dtype=np.int_)
         alpha = 0
@@ -82,7 +84,7 @@ def main():
 
         # Montando e salvando matriz PPMI
         file = matriz_PPMI + doc
-        output = open(file, 'a+')
+        output = open(file, 'w+')
 
         PPMI = np.zeros((contador, contador), dtype=np.float64)
 
@@ -93,6 +95,21 @@ def main():
             output.write('\n')
 
         output.close()
+
+        # Montando e salvando matriz de Correlação de Pearson
+        file = correlação_pearson + doc
+        output = open(file, 'w+')
+
+        pearson = np.zeros((contador, contador), dtype=np.float64)
+
+        for i in range(0,contador):
+            for j in range(0,contador):
+                pearson[i][j], p_value = stats.pearsonr(PPMI[i],PPMI[j])
+                output.write(str(pearson[i][j]) + ' ')
+            output.write('\n')
+
+        output.close()
+
 
 # -------------------------------------------------------------------------#
 # Executa o metodo main
